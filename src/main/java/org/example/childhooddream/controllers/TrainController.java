@@ -39,3 +39,4 @@ public class TrainController {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("{\"message\": \"invalid endpoint\"}");
     }
 }
+
