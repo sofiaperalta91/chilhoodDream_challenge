@@ -20,4 +20,20 @@ public class TrainService {
     public Optional<Train> getTrainById(int id) {
         return trainRepository.findById(id);
     }
+
+    public List <Train> getTrainsBySharingTracks(boolean sharingTracks){
+        return trainRepository.findBySharingTracks(sharingTracks);
+    }
+    public List <Train> getTrainsByAmenities(String keyword){
+        return trainRepository.findByAmenitiesLike(keyword);
+    }
+
+    public boolean deleteTrainById(int id){
+        if (trainRepository.findById(id).isPresent()){
+            trainRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

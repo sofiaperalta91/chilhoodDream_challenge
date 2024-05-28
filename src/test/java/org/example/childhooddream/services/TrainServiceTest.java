@@ -69,4 +69,59 @@ class TrainServiceTest {
         // Assert
         assertFalse(result.isPresent());
     }
+
+    @Test
+    void testGetTrainsBySharingTracks(){
+        //Arrange
+        Train train1 = mock(Train.class);
+        Train train2 = mock(Train.class);
+        List<Train> trains = Arrays.asList(train1, train2);
+        when(trainRepository.findBySharingTracks(true)).thenReturn(trains);
+
+        //Act
+        List<Train> result = trainService.getTrainsBySharingTracks(true);
+
+        //Assert
+        assertEquals(trains.size(), result.size());
+    }
+
+    @Test
+    void testGetTrainsByAmenities(){
+        //Arrange
+        Train train1 = mock(Train.class);
+        Train train2 = mock(Train.class);
+        List<Train> trains = Arrays.asList(train1, train2);
+        when(trainRepository.findByAmenitiesLike("bar")).thenReturn(trains);
+
+        //Act
+        List<Train> result = trainService.getTrainsByAmenities("bar");
+
+        //Assert
+        assertEquals(trains.size(), result.size());
+    }
+
+    @Test
+    void testDeleteTrainById_True(){
+        //Arrange
+        when(trainRepository.findById(1)).thenReturn(Optional.of(new Train()));
+
+        //Act
+        boolean result = trainService.deleteTrainById(1);
+
+        //Assert
+        assertTrue(result);
+
+    }
+    @Test
+    void testDeleteTrainById_False(){
+        //Arrange
+        when(trainRepository.findById(1)).thenReturn(Optional.empty());
+
+        //Act
+        boolean result = trainService.deleteTrainById(1);
+
+        //Assert
+        assertFalse(result);
+
+    }
 }

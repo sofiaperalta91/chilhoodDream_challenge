@@ -1,22 +1,21 @@
 package org.example.childhooddream.controllers;
 
+
 import org.example.childhooddream.entities.Train;
 import org.example.childhooddream.repositories.TrainRepository;
-import org.example.childhooddream.services.TrainService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -53,13 +52,53 @@ class TrainControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+    @Test
+    void testGetTrainsSharingTrack() throws Exception {
+        mvc.perform(get("/trains/sharing-tracks")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+    @Test
+    void testGetTrainsAmenitites_Empty() throws Exception {
+        mvc.perform(get("/trains?keyword=bed")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
+    @Test
+    void testGetTrainsAmenities_NotEmpty() throws Exception {
+        mvc.perform(get("/trains?keyword=bar")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+
 
     @Test
-    void handleInvalidEndpoints() throws Exception {
+    void testHandleInvalidEndpoints() throws Exception {
         mvc.perform(get("/trainssss")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed())
-                .andExpect(jsonPath("$.message",is("invalid endpoint")));
+                .andExpect(jsonPath("$.message",is("Invalid endpoint.")));
 
     }
+
+
+    @Test
+    void testDeleteTrainId_ValidId() throws Exception {
+       mvc.perform(delete("/trains/5")
+               .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void testDeleteTrainId_InvalidId() throws Exception {
+        mvc.perform(delete("/trains/0")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+    }
+
 }
