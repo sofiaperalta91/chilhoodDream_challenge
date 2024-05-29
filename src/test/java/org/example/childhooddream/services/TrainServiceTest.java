@@ -124,4 +124,79 @@ class TrainServiceTest {
         assertFalse(result);
 
     }
+    @Test
+    void testUpdateTrain_WhenTrainExists(){
+
+        //Arrange
+            Train existingTrain = new Train();
+
+            existingTrain.setId(1);
+            existingTrain.setAmenities("");
+            existingTrain.setDescription("");
+            existingTrain.setDistanceBetweenStop("");
+            existingTrain.setGradeCrossing(false);
+            existingTrain.setMaxSpeed("");
+            existingTrain.setName("");
+            existingTrain.setSharingTracks(true);
+            existingTrain.setTrainFrequency("");
+
+            Train updatedTrainDetails = new Train();
+
+            updatedTrainDetails.setAmenities("Premium");
+            updatedTrainDetails.setDescription("New Description");
+            updatedTrainDetails.setDistanceBetweenStop("150");
+            updatedTrainDetails.setGradeCrossing(true);
+            updatedTrainDetails.setMaxSpeed("100");
+            updatedTrainDetails.setName("New Train");
+            updatedTrainDetails.setSharingTracks(false);
+            updatedTrainDetails.setTrainFrequency("15");
+
+        //Act
+        Train result = trainService.updateTrain(existingTrain, updatedTrainDetails);
+
+        //Assert
+        assertEquals("Premium", result.getAmenities());
+        assertEquals("New Description", result.getDescription());
+        assertEquals("150", result.getDistanceBetweenStop());
+        assertEquals(true, result.getGradeCrossing());
+        assertEquals("100", result.getMaxSpeed());
+        assertEquals("New Train", result.getName());
+        assertEquals(false, result.getSharingTracks());
+        assertEquals("15", result.getTrainFrequency());
+
+        }
+    @Test
+    void testSave(){
+
+        //Arrange
+
+        Train trainDetails = new Train();
+        trainDetails.setId(1);
+        trainDetails.setAmenities("Premium");
+        trainDetails.setDescription("New Description");
+        trainDetails.setDistanceBetweenStop("150");
+        trainDetails.setGradeCrossing(true);
+        trainDetails.setMaxSpeed("100");
+        trainDetails.setName("New Train");
+        trainDetails.setSharingTracks(false);
+        trainDetails.setTrainFrequency("15");
+
+
+        when(trainRepository.save(trainDetails)).thenReturn(trainDetails);
+
+
+        //Act
+        Train result = trainService.save(trainDetails);
+
+        //Assert
+        assertEquals("Premium", result.getAmenities());
+        assertEquals("New Description", result.getDescription());
+        assertEquals("150", result.getDistanceBetweenStop());
+        assertEquals(true, result.getGradeCrossing());
+        assertEquals("100", result.getMaxSpeed());
+        assertEquals("New Train", result.getName());
+        assertEquals(false, result.getSharingTracks());
+        assertEquals("15", result.getTrainFrequency());
+
+    }
 }

@@ -1,5 +1,6 @@
 package org.example.childhooddream.services;
 
+import jakarta.transaction.Transactional;
 import org.example.childhooddream.entities.Train;
 import org.example.childhooddream.repositories.TrainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,22 @@ public class TrainService {
         } else {
             return false;
         }
+    }
+
+    @Transactional
+    public Train updateTrain(Train train, Train trainDetails) {
+                    train.setAmenities(trainDetails.getAmenities());
+                    train.setDescription(trainDetails.getDescription());
+                    train.setDistanceBetweenStop(trainDetails.getDistanceBetweenStop());
+                    train.setGradeCrossing(trainDetails.getGradeCrossing());
+                    train.setMaxSpeed(trainDetails.getMaxSpeed());
+                    train.setName(trainDetails.getName());
+                    train.setSharingTracks(trainDetails.getSharingTracks());
+                    train.setTrainFrequency(trainDetails.getTrainFrequency());
+    return train;
+    }
+
+    public Train save(Train train){
+        return trainRepository.save(train);
     }
 }

@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface TrainRepository extends JpaRepository<Train, Integer> {
 
-    void deleteById(int id);
-
     List<Train> findBySharingTracks(boolean sharingTracks);
 
 

@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: ChildhoodDream
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    username: postgres
+    password: password
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+  sql:
+    init.mode: always
+
+server:
+  error:
+    include-message: always
+  servlet:
+    context-path: /api
+
+---
+
+spring:
+  profiles:
+    active: test
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+

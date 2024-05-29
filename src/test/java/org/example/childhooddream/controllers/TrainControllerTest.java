@@ -8,20 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class TrainControllerTest {
     @Autowired
     private TrainRepository trainRepository;
@@ -40,15 +40,15 @@ class TrainControllerTest {
 
     @Test
     void testGetTrain_ValidId() throws Exception {
-        mvc.perform(get("/trains/5")
+        mvc.perform(get("/trains/3")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is("Star Wars")));
+                .andExpect(jsonPath("$.name", is("On the floor")));
     }
 
     @Test
     void testGetTrain_InvalidId() throws Exception {
-        mvc.perform(get("/trains/9")
+        mvc.perform(get("/trains/11")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -87,7 +87,7 @@ class TrainControllerTest {
 
     @Test
     void testDeleteTrainId_ValidId() throws Exception {
-       mvc.perform(delete("/trains/5")
+       mvc.perform(delete("/trains/4")
                .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk());
 
@@ -101,4 +101,41 @@ class TrainControllerTest {
 
     }
 
+
+    @Test
+    void testUpdateTrainId_message1() throws Exception {
+        String trainJson = "{"
+                + "\"name\":\"New Express\","
+                + "\"description\":\"Updated fast train\","
+                + "\"distanceBetweenStop\":\"12km\","
+                + "\"maxSpeed\":\"320km/h\","
+                + "\"sharingTracks\":true,"
+                + "\"gradeCrossing\":false,"
+                + "\"trainFrequency\":\"Every 15 minutes\","
+                + "\"amenities\":\"WiFi, Power outlets\""
+                + "}";
+        mvc.perform(put("/trains/2").contentType(MediaType.APPLICATION_JSON)
+                .content(trainJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message",is("Train edited successfully.")));
+    }
+
+    @Test
+    void testUpdateTrainId_message2() throws Exception {
+        String trainJson = "{"
+                + "\"name\":\"New Express\","
+                + "\"description\":\"Updated fast train\","
+                + "\"distanceBetweenStop\":\"12km\","
+                + "\"maxSpeed\":\"320km/h\","
+                + "\"sharingTracks\":true,"
+                + "\"gradeCrossing\":false,"
+                + "\"trainFrequency\":\"Every 15 minutes\","
+                + "\"amenities\":\"WiFi, Power outlets\""
+                + "}";
+
+        mvc.perform(put("/trains/10").contentType(MediaType.APPLICATION_JSON)
+                .content(trainJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message",is("Train created successfully.")));
+    }
 }
