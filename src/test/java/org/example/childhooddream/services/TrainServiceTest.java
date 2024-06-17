@@ -1,6 +1,8 @@
 package org.example.childhooddream.services;
 
+import org.example.childhooddream.dto.TrainDTO;
 import org.example.childhooddream.entities.Train;
+import org.example.childhooddream.mappers.TrainMapper;
 import org.example.childhooddream.repositories.TrainRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,9 @@ import static org.mockito.Mockito.when;
 class TrainServiceTest {
     @Mock
     private TrainRepository trainRepository;
+
+    @Mock
+    private TrainMapper trainMapper;
 
     @InjectMocks
     private TrainService trainService;
@@ -140,7 +145,7 @@ class TrainServiceTest {
             existingTrain.setSharingTracks(true);
             existingTrain.setTrainFrequency("");
 
-            Train updatedTrainDetails = new Train();
+            TrainDTO updatedTrainDetails = new TrainDTO();
 
             updatedTrainDetails.setAmenities("Premium");
             updatedTrainDetails.setDescription("New Description");
@@ -181,9 +186,7 @@ class TrainServiceTest {
         trainDetails.setSharingTracks(false);
         trainDetails.setTrainFrequency("15");
 
-
         when(trainRepository.save(trainDetails)).thenReturn(trainDetails);
-
 
         //Act
         Train result = trainService.save(trainDetails);
@@ -197,6 +200,39 @@ class TrainServiceTest {
         assertEquals("New Train", result.getName());
         assertEquals(false, result.getSharingTracks());
         assertEquals("15", result.getTrainFrequency());
+
+    }
+    @Test
+    void testCreateAndSaveTrain(){
+        //Arrange
+        int id = 1;
+        String name = "New Train";
+        String description = "New Description";
+        String distanceBetweenStop = "150";
+        String maxSpeed = "100";
+        Boolean sharingTracks = false;
+        Boolean gradeCrossing = true;
+        String trainFrequency = "15";
+        String amenities = "Premium";
+
+        TrainDTO trainDTO = new TrainDTO(name, description, distanceBetweenStop, maxSpeed,sharingTracks,
+                gradeCrossing, trainFrequency, amenities);
+        Train train = new Train(id, name, description, distanceBetweenStop, maxSpeed, sharingTracks, gradeCrossing, trainFrequency, amenities);
+        when(trainMapper.toEntity(trainDTO)).thenReturn(train);
+        when(trainRepository.save(train)).thenReturn(train);
+
+        //Act
+        Train result = trainService.createAndSaveTrain(trainDTO);
+
+        //Assert
+        assertEquals(name, result.getName());
+        assertEquals(description, result.getDescription());
+        assertEquals(distanceBetweenStop, result.getDistanceBetweenStop());
+        assertEquals(maxSpeed, result.getMaxSpeed());
+        assertEquals(sharingTracks, result.getSharingTracks());
+        assertEquals(gradeCrossing, result.getGradeCrossing());
+        assertEquals(trainFrequency, result.getTrainFrequency());
+        assertEquals(amenities, result.getAmenities());
 
     }
 }

@@ -1,18 +1,26 @@
 package org.example.childhooddream.services;
 
 import jakarta.transaction.Transactional;
+import org.example.childhooddream.dto.TrainDTO;
 import org.example.childhooddream.entities.Train;
+import org.example.childhooddream.mappers.TrainMapper;
 import org.example.childhooddream.repositories.TrainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class TrainService {
+
     @Autowired
     private TrainRepository trainRepository;
+
+    @Autowired
+    private TrainMapper trainMapper;
 
     public List<Train> getAllTrains() {
         return trainRepository.findAll();
@@ -22,9 +30,10 @@ public class TrainService {
         return trainRepository.findById(id);
     }
 
-    public List <Train> getTrainsBySharingTracks(boolean sharingTracks){
-        return trainRepository.findBySharingTracks(sharingTracks);
+    public List<Train> getTrainsBySharingTracks(boolean sharingTracks) {
+       return trainRepository.findBySharingTracks(sharingTracks);
     }
+
     public List <Train> getTrainsByAmenities(String keyword){
         return trainRepository.findByAmenitiesLike(keyword);
     }
@@ -39,7 +48,7 @@ public class TrainService {
     }
 
     @Transactional
-    public Train updateTrain(Train train, Train trainDetails) {
+    public Train updateTrain(Train train, TrainDTO trainDetails) {
                     train.setAmenities(trainDetails.getAmenities());
                     train.setDescription(trainDetails.getDescription());
                     train.setDistanceBetweenStop(trainDetails.getDistanceBetweenStop());
@@ -51,7 +60,13 @@ public class TrainService {
     return train;
     }
 
+
     public Train save(Train train){
         return trainRepository.save(train);
+    }
+
+    public Train createAndSaveTrain(TrainDTO trainDTO) {
+        Train train = trainMapper.toEntity(trainDTO);
+        return save(train);
     }
 }
